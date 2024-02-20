@@ -157,3 +157,31 @@ temp_data = data[data[' shares'] <= 100000]
 kw_cols = [' rate_positive_words', ' rate_negative_words', ' global_rate_positive_words', ' global_rate_negative_words', ' shares']
 # run a pairplot
 sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
+'''
+There is a linear relationship between rate_positive_words and rate_negative_words (it is expected)
+rate_positive_words = No special relationship or observable trait was observed for this variable. Although most of articles tends 
+to be on falls towards the 0.3 - 1
+rate_negative_words = No special relationship or observable trait was observed for this variable. Although most of articles tends 
+to be on falls towards the 0.8 - 0 = Note the articles with popularity less than "average" have the lowest negative score rate.
+global_rate_positive_words - There is a slight relationship with shares. - Medium
+global_rate_negative_words - There is a slight relationship with shares. - Medium
+'''
+
+# attempt polartiy
+temp_data = data[data[' shares'] <= 100000]
+sns.lmplot(x=' avg_positive_polarity', y=' shares', col='popularity', data=temp_data)
+
+# attempt polartiy
+temp_data = data[data[' shares'] <= 100000]
+fig, axes = plt.subplots(figsize=(5,4))
+sns.scatterplot(x=' avg_positive_polarity', y=' shares', hue='popularity', data=temp_data, ax=axes)
+
+#Finding relationship between 'rate_positive_words', 'rate_negative_words', 'global_rate_positive_words', 'global_rate_negative_words', and 'shares'
+temp_data = data[data[' shares'] <= 100000]
+# running a pair plot for the terms
+kw_cols = [' avg_positive_polarity', ' min_positive_polarity', ' max_positive_polarity', ' avg_negative_polarity', ' min_negative_polarity', ' max_negative_polarity', ' shares']
+# run a pairplot
+sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
+'''
+avg_positive_polarity and avg_negative_polarity are good features with some clear observation 
+'''
