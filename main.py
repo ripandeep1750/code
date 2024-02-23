@@ -10,3 +10,15 @@ Feature Selection and Evaluation
 Machine Learning Classification
 Summary and Conclusion.  '''
 
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=DeprecationWarning)
+warnings.simplefilter(action='ignore', category=RuntimeWarning)
+
+# Libaries import
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import matplotlib.pyplot as plt
+import seaborn as sns
+from copy import copy
+from sklearn.manifold import TSNE
