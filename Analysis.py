@@ -219,3 +219,29 @@ temp_data = data[data[' shares'] <= 100000]
 kw_cols = [' title_sentiment_polarity', ' abs_title_sentiment_polarity', ' title_subjectivity', ' abs_title_subjectivity', ' shares']
 # run a pairplot
 sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
+
+# attempt self_reference_min_shares
+temp_data = data[(data[' shares'] <= 100000) & (data[' self_reference_min_shares'] <= 30000)]
+fig, axes = plt.subplots(figsize=(7,7))
+sns.scatterplot(x=' self_reference_min_shares', y=' shares', hue= 'popularity', data=temp_data, ax=axes)
+
+temp_data = data[data[' shares'] <= 100000]
+# running a pair plot for the kw__terms
+kw_cols = [' self_reference_min_shares', ' self_reference_max_shares', ' self_reference_avg_sharess', ' shares']
+# run a pairplot
+sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
+
+#### LDA - 0: 5   (Latent Dirichlet Allocation)
+temp_data = data[data[' shares'] <= 100000]
+# running a pair plot for the kw__terms
+kw_cols = [' LDA_00', ' LDA_01', ' LDA_02', ' LDA_03', ' LDA_04', ' shares']
+# run a pairplot
+sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
+''' LDA (Latent Dirichlet Allocation): LDA is a topic modeling technique used to discover latent topics in a collection of documents. 
+It assumes that each document is a mixture of various topics, and each topic is characterized by a distribution of words. 
+The LDA algorithm aims to uncover these latent topics and their word distributions.
+In the context of your code, the labels LDA_00, LDA_01, LDA_02, LDA_03, and LDA_04 represent the probability distribution of an article
+belonging to each of the five identified topics. Each label corresponds to the probability of an article being associated with a specific
+topic. For example, LDA_00 represents the probability of an article belonging to Topic 0, LDA_01 represents the probability of an article
+belonging to Topic 1, and so on. In summary, the LDA labels (LDA_00, LDA_01, LDA_02, LDA_03, LDA_04) in your code represent the
+probability distribution of topics assigned to each article based on the Latent Dirichlet Allocation (LDA) topic modeling algorithm. '''
