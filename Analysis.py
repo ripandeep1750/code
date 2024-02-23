@@ -1,4 +1,18 @@
+In this project, the goal is the explore the dataset given and be able to find critical insights that can be used to influence potential
+article popularity. Also, machine learning models was built to be able to predict the popularity of a given article.
 
+The process followed is highlighted below:
+Data Cleaning - Noise detection and removal
+Subjective analysis - Using our intuition to evaluate a data variable/feature and decide whether a variable influences the popularity of 
+the article or not.
+Quantitative Analysis - How correct is our intuition? Here we carry our several analysis to accept or debunk our initial hypothesis
+Normal Distribuiton Observation on the dataset
+Feature Selection and Evaluation
+Machine Learning Classification
+Summary and Conclusion.
+
+
+# Libaries import
 # Libaries import
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
@@ -186,3 +200,22 @@ sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
 '''
 avg_positive_polarity and avg_negative_polarity are good features with some clear observation 
 '''
+
+# attempt title_sentiment_polarity
+temp_data = data[data[' shares'] <= 100000]
+fig, axes = plt.subplots(figsize=(7,5))
+sns.scatterplot(x=' title_sentiment_polarity', y=' shares', hue='popularity', data=temp_data, ax=axes)
+
+# attempt title_subjectivity
+temp_data = data[data[' shares'] <= 100000]
+fig, axes = plt.subplots(figsize=(15,15))
+sns.relplot(x=' title_subjectivity', y=' shares', hue='popularity', data=temp_data, ax=axes)
+'''sns.relplot() is used instead of sns.scatterplot(). The relplot() function in seaborn is a higher-level function that can create 
+different types of relational plots, including scatter plots. It provides greater flexibility for creating various plot types and 
+supports additional parameters for customization.'''
+
+temp_data = data[data[' shares'] <= 100000]
+# running a pair plot for the kw__terms
+kw_cols = [' title_sentiment_polarity', ' abs_title_sentiment_polarity', ' title_subjectivity', ' abs_title_subjectivity', ' shares']
+# run a pairplot
+sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
