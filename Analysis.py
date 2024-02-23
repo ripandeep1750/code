@@ -1,4 +1,4 @@
-In this project, the goal is the explore the dataset given and be able to find critical insights that can be used to influence potential
+''' In this project, the goal is the explore the dataset given and be able to find critical insights that can be used to influence potential
 article popularity. Also, machine learning models was built to be able to predict the popularity of a given article.
 
 The process followed is highlighted below:
@@ -9,7 +9,7 @@ Quantitative Analysis - How correct is our intuition? Here we carry our several 
 Normal Distribuiton Observation on the dataset
 Feature Selection and Evaluation
 Machine Learning Classification
-Summary and Conclusion.
+Summary and Conclusion. '''
 
 
 # Libaries import
