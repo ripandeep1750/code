@@ -245,3 +245,43 @@ belonging to each of the five identified topics. Each label corresponds to the p
 topic. For example, LDA_00 represents the probability of an article belonging to Topic 0, LDA_01 represents the probability of an article
 belonging to Topic 1, and so on. In summary, the LDA labels (LDA_00, LDA_01, LDA_02, LDA_03, LDA_04) in your code represent the
 probability distribution of topics assigned to each article based on the Latent Dirichlet Allocation (LDA) topic modeling algorithm. '''
+
+# extact the weekdays articles distrubution
+weekdays_data = data.groupby('weekdays').size().reset_index()
+weekdays_data.columns = ['weekdays','count']
+weekdays_data
+
+# shows the days when articles are usually posted
+fig, axes = plt.subplots(figsize=(7,5))
+ax = sns.countplot(x='weekdays',data=data,alpha=0.5, ax=axes)
+
+# shows relationship with the number of shares and the weekdays
+temp_data = data[(data['popularity'] == 'Very Poor') | (data['popularity'] == 'Poor') | (data['popularity'] == 'Average') | (data['popularity'] == 'Good')]
+ax = sns.catplot(x='weekdays', col="popularity", data=temp_data, kind="count", height=10, aspect=.7)
+
+# shows relationship with the number of shares and the weekdays (compare only the best three popularity)
+temp_data = data[(data['popularity'] == 'Exceptional') | (data['popularity'] == 'Excellent') | (data['popularity'] == 'Very Good')]
+ax = sns.catplot(x='weekdays', col="popularity", data=temp_data, kind="count", height=20, aspect=.7)
+''' It seems the best popular articles are usually posted on Mondays and Wednesday (and a bit of tuesdays) Sundays and Saturdays 
+(Weekends generally) are the worsts days to publish an articles. Your chances are low '''
+
+temp_data = data[data[' shares'] <= 100000]
+# running a pair plot for the kw__terms
+kw_cols = [' average_token_length', ' num_keywords', ' global_subjectivity', ' global_sentiment_polarity', ' shares']
+# run a pairplot
+sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
+''' 
+'average_token_length': average length of tokens (such as words) in the content.
+'num_keywords': number of keywords associated with the content.
+'global_subjectivity': the subjectivity score of the content, indicating how subjective or opinion-based the content is.
+'global_sentiment_polarity': the sentiment polarity score of the content, indicating the overall sentiment expressed (positive or negative).
+'''
+
+## Seeing the distribution of the articles across the data channels
+# extact the weekdays articles distrubution
+data_channel_data = data.groupby('data_channel').size().reset_index()
+data_channel_data.columns = ['Data Channels','No of articles']
+data_channel_data
+
+# Shows the distribution of the articles across the channels
+sns.catplot(x='data_channel', data=data, kind="count", height=10, aspect=.7)
