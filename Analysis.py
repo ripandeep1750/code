@@ -1,4 +1,5 @@
-''' In this project, the goal is the explore the dataset given and be able to find critical insights that can be used to influence potential
+''' 
+In this project, the goal is the explore the dataset given and be able to find critical insights that can be used to influence potential
 article popularity. Also, machine learning models was built to be able to predict the popularity of a given article.
 
 The process followed is highlighted below:
@@ -9,7 +10,8 @@ Quantitative Analysis - How correct is our intuition? Here we carry our several 
 Normal Distribuiton Observation on the dataset
 Feature Selection and Evaluation
 Machine Learning Classification
-Summary and Conclusion. '''
+Summary and Conclusion. 
+'''
 
 
 # Libaries import
@@ -210,9 +212,11 @@ sns.scatterplot(x=' title_sentiment_polarity', y=' shares', hue='popularity', da
 temp_data = data[data[' shares'] <= 100000]
 fig, axes = plt.subplots(figsize=(15,15))
 sns.relplot(x=' title_subjectivity', y=' shares', hue='popularity', data=temp_data, ax=axes)
-'''sns.relplot() is used instead of sns.scatterplot(). The relplot() function in seaborn is a higher-level function that can create 
+'''
+sns.relplot() is used instead of sns.scatterplot(). The relplot() function in seaborn is a higher-level function that can create 
 different types of relational plots, including scatter plots. It provides greater flexibility for creating various plot types and 
-supports additional parameters for customization.'''
+supports additional parameters for customization.
+'''
 
 temp_data = data[data[' shares'] <= 100000]
 # running a pair plot for the kw__terms
@@ -237,14 +241,16 @@ temp_data = data[data[' shares'] <= 100000]
 kw_cols = [' LDA_00', ' LDA_01', ' LDA_02', ' LDA_03', ' LDA_04', ' shares']
 # run a pairplot
 sns.pairplot(temp_data, vars=kw_cols, hue='popularity', diag_kind='kde')
-''' LDA (Latent Dirichlet Allocation): LDA is a topic modeling technique used to discover latent topics in a collection of documents. 
+''' 
+LDA (Latent Dirichlet Allocation): LDA is a topic modeling technique used to discover latent topics in a collection of documents. 
 It assumes that each document is a mixture of various topics, and each topic is characterized by a distribution of words. 
 The LDA algorithm aims to uncover these latent topics and their word distributions.
 In the context of your code, the labels LDA_00, LDA_01, LDA_02, LDA_03, and LDA_04 represent the probability distribution of an article
 belonging to each of the five identified topics. Each label corresponds to the probability of an article being associated with a specific
 topic. For example, LDA_00 represents the probability of an article belonging to Topic 0, LDA_01 represents the probability of an article
 belonging to Topic 1, and so on. In summary, the LDA labels (LDA_00, LDA_01, LDA_02, LDA_03, LDA_04) in your code represent the
-probability distribution of topics assigned to each article based on the Latent Dirichlet Allocation (LDA) topic modeling algorithm. '''
+probability distribution of topics assigned to each article based on the Latent Dirichlet Allocation (LDA) topic modeling algorithm. 
+'''
 
 # extact the weekdays articles distrubution
 weekdays_data = data.groupby('weekdays').size().reset_index()
@@ -262,8 +268,10 @@ ax = sns.catplot(x='weekdays', col="popularity", data=temp_data, kind="count", h
 # shows relationship with the number of shares and the weekdays (compare only the best three popularity)
 temp_data = data[(data['popularity'] == 'Exceptional') | (data['popularity'] == 'Excellent') | (data['popularity'] == 'Very Good')]
 ax = sns.catplot(x='weekdays', col="popularity", data=temp_data, kind="count", height=20, aspect=.7)
-''' It seems the best popular articles are usually posted on Mondays and Wednesday (and a bit of tuesdays) Sundays and Saturdays 
-(Weekends generally) are the worsts days to publish an articles. Your chances are low '''
+'''
+It seems the best popular articles are usually posted on Mondays and Wednesday (and a bit of tuesdays) Sundays and Saturdays 
+(Weekends generally) are the worsts days to publish an articles. Your chances are low 
+'''
 
 temp_data = data[data[' shares'] <= 100000]
 # running a pair plot for the kw__terms
@@ -300,8 +308,10 @@ sns.boxplot(x='popularity',y=' num_imgs', hue='data_channel', data=temp_data, sh
 
 #n_tokens_content
 sns.scatterplot(x=' n_tokens_content',y='popularity', data=data)
-''' n_tokens_content' likely represents the number of tokens (such as words) present in the content of each article. It can be seen 
-than good articles will generally tend to have n_tokens_content less than 2000 and greater than 100 words '''
+''' 
+n_tokens_content' likely represents the number of tokens (such as words) present in the content of each article. It can be seen 
+than good articles will generally tend to have n_tokens_content less than 2000 and greater than 100 words 
+'''
 
 #n_tokens_title
 temp_data = data[data[' shares'] <= 200000]
@@ -359,7 +369,8 @@ sns.lmplot(x=' self_reference_avg_sharess', y=' shares', col='popularity', data=
 print("Skewness: %f" % data[' shares'].skew())
 print("Kurtosis: %f" % data[' shares'].kurt())
 
-''' Skewness is a measure of the asymmetry of the probability distribution of a real-valued random variable. A skewness value of 0 
+''' 
+Skewness is a measure of the asymmetry of the probability distribution of a real-valued random variable. A skewness value of 0 
 indicates a perfectly symmetrical distribution. A positive skewness value indicates a right-skewed (positively skewed) distribution,
 where the tail of the distribution is elongated towards the right. A negative skewness value indicates a left-skewed (negatively skewed) 
 distribution, where the tail of the distribution is elongated towards the left.
@@ -369,16 +380,119 @@ the shape of the distribution to that of a normal distribution. A kurtosis value
 (greater than 0) indicates heavy-tailedness or more outliers compared to a normal distribution. Negative kurtosis (less than 0) indicates
 light-tailedness or fewer outliers compared to a normal distribution.
 "Kurtosis: 1909.931080", it means that the 'shares' column has a very high positive kurtosis, indicating that the distribution of the 
-'shares' data has heavy-tailedness and contains a large number of outliers compared to a normal distribution. '''
+'shares' data has heavy-tailedness and contains a large number of outliers compared to a normal distribution.
+'''
 
 from scipy.stats import norm, probplot       # Normal distribution
-#histogram and normal probability plot
+#histogram and normal probability plot       # determine if the 'shares' data follows a normal distribution
 temp_data = data[data[' shares'] <= 100000]
 fig,ax = plt.subplots(figsize=(10,10))
 sns.distplot(data[' shares'], fit=norm);
 fig = plt.figure()
-res = probplot(data[' shares'], plot=plt)
+res = probplot(data[' shares'], plot=plt)    # probability plot or quantile-quantile (Q-Q) plot
 '''
 'Shares' doesn't have a normal distribution. It shows 'peakedness', positive skewness and does not follow the diagonal line.
 Thus some statistic analysis might not be suitable for it
+The histogram shows the distribution of the 'shares' data, while the curve represents what the distribution would look like if it were a
+normal distribution. This plot compares the 'shares' data to what it would look like if it followed a normal distribution. If the 'shares'
+data closely matches the diagonal line on the plot, it means it follows a normal distribution.
 ''' 
+
+from copy import copy
+
+#applying log transformation
+new_shares_data = copy(data)
+new_shares_data.loc[new_shares_data[' shares'] > 0, ' shares'] = np.log(data.loc[data[' shares'] > 0, ' shares'])
+'''
+selects the rows where the 'shares' value is greater than 0 and replaces those values with their natural logarithm using the np.log()
+function. This transformation is performed to address the positive skewness in the data. 
+'''
+new_shares_log = new_shares_data[' shares']     # contains the log-transformed 'shares' data.
+#transformed histogram and normal probability plot
+fig,ax = plt.subplots(figsize=(7,7))
+sns.distplot(new_shares_log, fit=norm);
+fig = plt.figure()
+res = probplot(new_shares_log, plot=plt)
+
+#Check for missing data
+total = new_shares_data.isnull().sum().sort_values(ascending=False)
+percent = (new_shares_data.isnull().sum()/new_shares_data.isnull().count()).sort_values(ascending=False)
+missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+missing_data.head()
+
+# Features selection on whole dataset
+
+# shares data is not needed for classification
+data_without_shares = data.drop(labels=[' shares'], axis = 1, inplace=False)
+training_set = data_without_shares.iloc[:, :(data_without_shares.shape[1]-1)]
+'''
+The iloc indexer is used to select rows and columns by their integer positions. The : before the comma represents all rows, 
+and :(data_without_shares.shape[1]-1) represents all columns except the last one. The shape[1] gives the number of columns in the 
+'data_without_shares' dataframe.
+'''
+# convert categorical variables into dummy - it use one-hot encoding
+training_set = pd.get_dummies(training_set)
+'''
+One-hot encoding is a technique used to convert categorical variables into a numerical representation that can be used by machine 
+learning algorithms.
+'''
+# extract the label data in this case popularity
+label_set = data_without_shares.iloc[:, (data_without_shares.shape[1]-1):].value
+'''
+stores the values of the last column from the 'data_without_shares' dataframe. This column represents the target variable or label for
+classification. The : after the comma represents all rows, and (data_without_shares.shape[1]-1): represents the last column. The 
+.values at the end converts the selected column into a NumPy array.
+'''
+data_feature2 = copy(training_set)
+
+# Feature selection based on best hypothesis observed
+
+# only the best observed features are extracted here
+data_feature1 =training_set[[' n_tokens_title',' n_tokens_content',' n_unique_tokens',' num_hrefs',
+                       ' num_self_hrefs',' num_imgs',' num_videos',' average_token_length',' num_keywords',
+                       ' kw_avg_avg',' self_reference_avg_sharess',' global_subjectivity',
+                       ' global_sentiment_polarity',' global_rate_positive_words',' global_rate_negative_words',' avg_positive_polarity',
+                       ' avg_negative_polarity',' title_sentiment_polarity','weekdays_Friday', 'weekdays_Monday', 'weekdays_Saturday',
+       'weekdays_Sunday', 'weekdays_Thursday', 'weekdays_Tueday',
+       'weekdays_Wednesday', 'data_channel_Business',
+       'data_channel_Entertainment', 'data_channel_Lifestyle',
+       'data_channel_Others', 'data_channel_Social Media', 'data_channel_Tech',
+       'data_channel_World']]
+
+data_feature1.columns
+
+# Feature Selection Based on Fisher Discrimating Analysis
+
+# helper function for evalating the fisher ndex
+def fisher_index_calc(trainingSet, labelSet):
+    (dim1_T, dim2_T) = trainingSet.shape
+    (dim1_L, dim2_L) = labelSet.shape
+    # create the fisher output variable - A vector of all the features
+    fisher_ratios = np.zeros((1, dim2_T), dtype=float).flatten()
+    # It's expected that the dim1_T and dim1_L be of the same size, else this input parameters is nulled.
+    if dim1_L != dim1_T:
+        return fisher_ratios
+    # First extract out the number of features available.
+    # grouped both data together, and create a pandas dataframe from it.
+    train1 = pd.DataFrame(trainingSet)
+    label1 = pd.DataFrame(labelSet, columns=['LABEL'])
+    grouped = pd.concat([train1, label1], axis=1)
+    # fetch the number of classes
+    (no_classes, demo) = grouped.groupby('LABEL').count()[[0]].shape
+    #print grouped
+    # loop through all features
+    for j in range(dim2_T):
+        # the variance of the feature j
+        j_variance = np.var(trainingSet[:,j])
+        j_mean = np.mean(trainingSet[:,j])
+        j_summation = 0
+        for k in range(no_classes):
+            output = grouped.groupby('LABEL').count()[[j]]
+            k_feature_count = output.iloc[k,0]
+            # mean for class k of feature j
+            output = grouped.groupby('LABEL').mean()[[j]]
+            k_feature_mean = output.iloc[k,0]
+            currentSum = k_feature_count * np.square((k_feature_mean - j_mean))
+            j_summation = j_summation + currentSum
+        fisher_ratios[j] = j_summation / np.square(j_variance)
+    return fisher_ratios
