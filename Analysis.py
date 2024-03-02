@@ -285,3 +285,100 @@ data_channel_data
 
 # Shows the distribution of the articles across the channels
 sns.catplot(x='data_channel', data=data, kind="count", height=10, aspect=.7)
+
+#the ranking of the channels in regards to the shares popularity
+temp_data = data[(data['popularity'] == 'Very Poor') | (data['popularity'] == 'Poor') | (data['popularity'] == 'Average') | (data['popularity'] == 'Good')]
+ax = sns.catplot(x='data_channel', col="popularity", data=temp_data, kind="count", height=8, aspect=.7)
+
+# shows relationship with the number of shares and the ranking of the channels (compare only the best three popularity)
+temp_data = data[(data['popularity'] == 'Exceptional') | (data['popularity'] == 'Excellent') | (data['popularity'] == 'Very Good')]
+ax = sns.catplot(x='data_channel', col="popularity", data=temp_data, kind="count", height=10, aspect=.7)
+
+fig,ax = plt.subplots(figsize=(7,7))
+temp_data = data[data[' num_imgs'] <= 25]
+sns.boxplot(x='popularity',y=' num_imgs', hue='data_channel', data=temp_data, showfliers=False)
+
+#n_tokens_content
+sns.scatterplot(x=' n_tokens_content',y='popularity', data=data)
+''' n_tokens_content' likely represents the number of tokens (such as words) present in the content of each article. It can be seen 
+than good articles will generally tend to have n_tokens_content less than 2000 and greater than 100 words '''
+
+#n_tokens_title
+temp_data = data[data[' shares'] <= 200000]
+sns.scatterplot(x=' n_tokens_title',y=' shares', hue='popularity', data=temp_data)
+# it can be seen than good articles will generally tend to have n_tokens_title between 6 and 17 words
+
+#n_tokens_title
+temp_data = data[data[' shares'] <= 200000]
+plt.figure(figsize=(10,10))
+sns.scatterplot(x=' n_unique_tokens',y=' shares', hue='popularity', data=data)
+
+#num_hrefs
+temp_data = data[data[' shares'] <= 100000]
+sns.scatterplot(x=' num_hrefs',y=' shares', hue='popularity', data=temp_data)
+# 'num_hrefs' represents the number of hyperlinks present in each article.
+
+#num_imgs
+temp_data = data[data[' shares'] <= 100000]
+#plt.figure(figsize=(30,10))
+#sns.barplot(x=' num_imgs',y=' shares', hue='popularity', data=temp_data)
+sns.lmplot(x=' num_imgs', y=' shares', col='popularity', data=temp_data)
+
+#num_videos
+temp_data = data[data[' shares'] <= 100000]
+noise_data  = data[data[' num_videos'] == 0]
+print (noise_data.shape)
+# plt.figure(figsize=(30,10))
+# sns.barplot(x=' num_imgs',y=' shares', hue='popularity', data=temp_data)
+sns.lmplot(x=' num_videos', y=' shares', col='popularity', data=temp_data)
+
+#average_token_length
+temp_data = data[data[' shares'] <= 100000]
+noise_data  = data[data[' average_token_length'] == 0]
+print (noise_data.shape)
+#plt.figure(figsize=(30,10))
+sns.scatterplot(x=' average_token_length',y=' shares', hue='popularity', data=temp_data)
+
+#num_keywords
+temp_data = data[data[' shares'] <= 100000]
+noise_data  = data[data[' num_keywords'] == 0]
+print (noise_data.shape)
+#plt.figure(figsize=(30,10))
+sns.scatterplot(x=' num_keywords',y=' shares', hue='popularity', data=temp_data)
+
+#self_reference_avg_sharess
+temp_data = data[data[' shares'] <= 100000]
+noise_data  = data[data[' self_reference_avg_sharess'] == 0]
+print (noise_data.shape)
+#plt.figure(figsize=(30,10))
+sns.scatterplot(x=' self_reference_avg_sharess',y=' shares', hue='popularity', data=temp_data)
+sns.lmplot(x=' self_reference_avg_sharess', y=' shares', col='popularity', data=temp_data)
+
+# Normal Distribution analysis for 'Shares'
+
+print("Skewness: %f" % data[' shares'].skew())
+print("Kurtosis: %f" % data[' shares'].kurt())
+
+''' Skewness is a measure of the asymmetry of the probability distribution of a real-valued random variable. A skewness value of 0 
+indicates a perfectly symmetrical distribution. A positive skewness value indicates a right-skewed (positively skewed) distribution,
+where the tail of the distribution is elongated towards the right. A negative skewness value indicates a left-skewed (negatively skewed) 
+distribution, where the tail of the distribution is elongated towards the left.
+"Skewness: 34.952465", it means that the 'shares' column has a significant positive skewness
+Kurtosis is a measure of the tailedness or peakedness of the probability distribution of a real-valued random variable. Kurtosis compares
+the shape of the distribution to that of a normal distribution. A kurtosis value of 0 indicates a normal distribution. Positive kurtosis 
+(greater than 0) indicates heavy-tailedness or more outliers compared to a normal distribution. Negative kurtosis (less than 0) indicates
+light-tailedness or fewer outliers compared to a normal distribution.
+"Kurtosis: 1909.931080", it means that the 'shares' column has a very high positive kurtosis, indicating that the distribution of the 
+'shares' data has heavy-tailedness and contains a large number of outliers compared to a normal distribution. '''
+
+from scipy.stats import norm, probplot       # Normal distribution
+#histogram and normal probability plot
+temp_data = data[data[' shares'] <= 100000]
+fig,ax = plt.subplots(figsize=(10,10))
+sns.distplot(data[' shares'], fit=norm);
+fig = plt.figure()
+res = probplot(data[' shares'], plot=plt)
+'''
+'Shares' doesn't have a normal distribution. It shows 'peakedness', positive skewness and does not follow the diagonal line.
+Thus some statistic analysis might not be suitable for it
+''' 
