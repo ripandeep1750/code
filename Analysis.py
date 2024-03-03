@@ -468,7 +468,7 @@ def fisher_index_calc(trainingSet, labelSet):
     (dim1_T, dim2_T) = trainingSet.shape
     (dim1_L, dim2_L) = labelSet.shape
     # create the fisher output variable - A vector of all the features
-    fisher_ratios = np.zeros((1, dim2_T), dtype=float).flatten()
+    fisher_ratios = np.zeros((1, dim2_T), dtype=float).flatten()  #initializes an array called 'fisher_ratios' with zeros. The array has a shape of (1, dim2_T)
     # It's expected that the dim1_T and dim1_L be of the same size, else this input parameters is nulled.
     if dim1_L != dim1_T:
         return fisher_ratios
@@ -483,7 +483,7 @@ def fisher_index_calc(trainingSet, labelSet):
     # loop through all features
     for j in range(dim2_T):
         # the variance of the feature j
-        j_variance = np.var(trainingSet[:,j])
+        j_variance = np.var(trainingSet[:,j])   # calculate spread or variability of the feature values.
         j_mean = np.mean(trainingSet[:,j])
         j_summation = 0
         for k in range(no_classes):
@@ -496,3 +496,283 @@ def fisher_index_calc(trainingSet, labelSet):
             j_summation = j_summation + currentSum
         fisher_ratios[j] = j_summation / np.square(j_variance)
     return fisher_ratios
+
+# calculates the fisher score of the features
+fisher_scores = fisher_index_calc(training_set.values, label_set)
+df = pd.DataFrame({'Fisher Ratio For All Features': fisher_scores})
+
+# plot the fisher analysis score
+ax = df.plot.bar(figsize=(20,10))
+plt.show()
+
+# feature selection based on fisher score
+# Fisher Index Ratio Filter - Remove features with low score
+# indices of features to remove based on fisher ratios
+to_remove = []
+for i in range((len(fisher_scores))):
+    if fisher_scores[i] < 3000:
+        # we mark for removal
+        to_remove.append(i)
+# remove features with low fisher score
+data_feature_fisher = training_set.drop(training_set.columns[to_remove], axis=1, inplace=False)
+print ("fisher based features - ", data_feature_fisher.shape)
+data_feature_fisher.columns
+
+# use log transformation to transform each features to a normal distribution
+training_set_normal = copy(training_set)
+# note log transformation can only be performed on data without zero value
+for col in training_set_normal.columns:
+    #applying log transformation
+    temp = training_set_normal[training_set_normal[col] == 0]
+    # only apply to non-zero features
+    if temp.shape[0] == 0:
+        training_set_normal[col] = np.log(training_set_normal[col])
+        print (col)
+    else:
+        # attempt to only transform the positive values alone
+        training_set_normal.loc[training_set_normal[col] > 0, col] = np.log(training_set_normal.loc[training_set_normal[col] > 0, col])
+
+# only the best observed features are extracted here
+data_feature1_normal =training_set_normal[[' n_tokens_title',' n_tokens_content',' n_unique_tokens',' num_hrefs',
+                       ' num_self_hrefs',' num_imgs',' num_videos',' average_token_length',' num_keywords',
+                       ' kw_avg_avg',' self_reference_avg_sharess',' global_subjectivity',
+                       ' global_sentiment_polarity',' global_rate_positive_words',' global_rate_negative_words',' avg_positive_polarity',
+                       ' avg_negative_polarity',' title_sentiment_polarity','weekdays_Friday', 'weekdays_Monday', 'weekdays_Saturday',
+       'weekdays_Sunday', 'weekdays_Thursday', 'weekdays_Tueday',
+       'weekdays_Wednesday', 'data_channel_Business',
+       'data_channel_Entertainment', 'data_channel_Lifestyle',
+       'data_channel_Others', 'data_channel_Social Media', 'data_channel_Tech',
+       'data_channel_World']]
+
+# calculates the fisher score of the features
+fisher_scores_normal = fisher_index_calc(training_set_normal.values, label_set)
+df = pd.DataFrame({'Fisher Ratio For All Features - Normal Distribution': fisher_scores_normal})
+# plot the fisher analysis score
+ax = df.plot.bar(figsize=(20,10))
+plt.show()
+
+# feature selection based on fisher score
+# Fisher Index Ratio Filter - Remove features with low score
+# indices of features to remove based on fisher ratios
+to_remove = []
+for i in range((len(fisher_scores_normal))):
+    if fisher_scores_normal[i] < 1000:
+        # we mark for removal
+        to_remove.append(i)
+# remove features with low fisher score
+data_feature_fisher_normal = training_set_normal.drop(training_set_normal.columns[to_remove], axis=1, inplace=False)
+# ihave about 25 features left.
+print ("fisher based features : Normal distributions - ", data_feature_fisher_normal.shape)
+data_feature_fisher_normal.columns
+
+data_feature2_normal = copy(training_set_normal)
+
+# Visulazing the impact of normal distribution on the data
+
+temp_data_normal = pd.concat([training_set_normal, pd.DataFrame(new_shares_log, columns=[' shares'])], axis=1)
+label_set6 = data_without_shares.iloc[:, (data_without_shares.shape[1]-1):]
+temp_data_normal = pd.concat([temp_data_normal, label_set6], axis=1)
+
+temp_data = temp_data_normal[temp_data_normal[' shares'] <= 100000]
+# running a pair plot for the kw__terms
+kw_cols = [' average_token_length', ' num_keywords', ' n_tokens_title', ' global_sentiment_polarity', ' shares']
+# run a pairplot
+sns.pairplot(temp_data_normal, vars=kw_cols, hue='popularity', diag_kind='kde')
+
+#n_tokens_title
+fig, axs = plt.subplots(figsize=(20,10), nrows=1,ncols=2)
+sns.scatterplot(x=' num_keywords',y=' shares', hue='popularity', data=temp_data_normal, ax=axs[0])
+sns.scatterplot(x=' num_keywords',y=' shares', hue='popularity', data=data, ax=axs[1])
+
+#n_tokens_content
+fig, axs = plt.subplots(figsize=(20,10), nrows=1,ncols=2)
+sns.scatterplot(x=' n_tokens_content',y=' shares', hue='popularity', data=temp_data_normal, ax=axs[0])
+sns.scatterplot(x=' n_tokens_content',y=' shares', hue='popularity', data=data, ax=axs[1])
+
+#title_subjectivity
+fig, axs = plt.subplots(figsize=(20,10), nrows=1,ncols=2)
+sns.scatterplot(x=' title_subjectivity',y=' shares', hue='popularity', data=temp_data_normal, ax=axs[0])
+sns.scatterplot(x=' title_subjectivity',y=' shares', hue='popularity', data=data, ax=axs[1])
+
+'''
+Variables of our features selection are listed below:
+Feature selection based on best hypothesis observed - data_feature1
+Feature Selection on the whole dataset - data_feature2
+Feature selection using fisher discriminal analysis - data_feature_fisher
+Feature selection based on the best hypothesis observed but with a normal distribution (log transformation) - data_feature1_normal
+Feature selection using fisher discriminate analysis on normal distribution dataset - data_feature_fisher_normal
+'''
+
+# normalizaling the data with standard scaler
+# we will normalized all the features selections
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+# scalled all the feature selections
+data_feature1_nor = scaler.fit_transform(data_feature1.values)
+data_feature2_nor = scaler.fit_transform(data_feature2.values)
+data_feature_fisher_nor = scaler.fit_transform(data_feature_fisher.values)
+data_feature1_normal_nor = scaler.fit_transform(data_feature1_normal.values)
+data_feature_fisher_normal_nor = scaler.fit_transform(data_feature_fisher_normal.values)
+data_feature2_normal_nor = scaler.fit_transform(data_feature2_normal.values)
+features_selection = [data_feature1_nor, data_feature2_nor, data_feature_fisher_nor, data_feature1_normal_nor, 
+                     data_feature_fisher_normal_nor, data_feature2_normal_nor]
+features_selection_labels = ['Features on Hypothesis', 'All Features', 'Fisher based Features', 
+                             'Features on Hypothesis - Normal Distribution', 'Fisher based Features - Normal Distribution',
+                             'All Features - Normal Distribution']
+
+data.head(n=5)
+
+# encoding the label set with a label encoder
+from sklearn.preprocessing import LabelEncoder
+labelEn = LabelEncoder()
+encoded_labels = labelEn.fit_transform(data.loc[:, 'popularity'].values)
+class_names = labelEn.classes_
+class_names
+
+# Splitting the data for Training and Testing
+from sklearn.model_selection import train_test_split, GridSearchCV
+
+# train and test for a feature selections
+X_train_1, X_test_1, y_train_1, y_test_1 = train_test_split(data_feature1_nor, encoded_labels, test_size=0.3, shuffle=False)
+X_train_2, X_test_2, y_train_2, y_test_2 = train_test_split(data_feature2_nor, encoded_labels, test_size=0.3, shuffle=False)
+X_train_3, X_test_3, y_train_3, y_test_3 = train_test_split(data_feature_fisher_nor, encoded_labels, test_size=0.3, shuffle=False)
+X_train_4, X_test_4, y_train_4, y_test_4 = train_test_split(data_feature1_normal_nor, encoded_labels, test_size=0.3, shuffle=False)
+X_train_5, X_test_5, y_train_5, y_test_5 = train_test_split(data_feature_fisher_normal_nor, encoded_labels, test_size=0.3, shuffle=False)
+X_train_6, X_test_6, y_train_6, y_test_6 = train_test_split(data_feature2_normal_nor, encoded_labels, test_size=0.3, shuffle=False)
+
+from sklearn.metrics import accuracy_score, make_scorer
+
+features_selection[4].shape
+
+encoded_labels.shape
+
+# function for confusion matrix
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.utils.multiclass import unique_labels
+def plot_confusion_matrix(y_true, y_pred, classes,
+                          normalize=False,
+                          title=None,
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    if not title:
+        if normalize:
+            title = 'Normalized confusion matrix'
+        else:
+            title = 'Confusion matrix, without normalization'
+    # Compute confusion matrix
+    cm = confusion_matrix(y_true, y_pred)
+    # Only use the labels that appear in the data
+    classes = classes[unique_labels(y_true, y_pred)]
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    print(cm)
+    fig, ax = plt.subplots(figsize=(10,10))
+    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+    ax.figure.colorbar(im, ax=ax)
+    # We want to show all ticks...
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=classes, yticklabels=classes,
+           title=title,
+           ylabel='True label',
+           xlabel='Predicted label')
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+    # Loop over data dimensions and create text annotations.
+    fmt = '.32f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            ax.text(j, i, format(cm[i, j], fmt),
+                    ha="center", va="center",
+                    color="white" if cm[i, j] > thresh else "black")
+    fig.tight_layout(pad=5, rect= (0, 0, 1, 1))
+    return ax
+
+# defining the model
+from sklearn.neighbors import KNeighborsClassifier
+k_range = np.arange(1,100)
+accuracy = []
+for n in k_range:    
+    neigh = KNeighborsClassifier(n_neighbors=n, n_jobs=-1)
+    neigh.fit(X_train_2, y_train_2)  
+    # predict the result
+    y_pred = neigh.predict(X_test_2)
+    #print ("Random Forest Classifer Result")
+    #print ("Performance - " + str(100*accuracy_score(y_pred, y_test_2)) + "%")
+    accuracy.append(100*accuracy_score(y_pred, y_test_2))
+
+plt.figure(figsize=(20,13))
+plt.plot(k_range, accuracy, 'r-', label='KNN Accuracy Vs KNN Neighbors size')
+plt.plot(k_range, accuracy, 'bx')
+plt.xlabel('KNN Neighbors size')
+plt.ylabel('KNN Accuracy')
+plt.legend()
+plt.grid()
+plt.title('KNN Accuracy Vs Neighbors size')
+plt.show()
+
+from sklearn.ensemble import RandomForestClassifier
+nns = [1, 5, 10, 50, 100, 200, 500, 1000, 2000, 3000]
+accuracy = []
+for n in nns:    
+    clf = RandomForestClassifier(n_estimators=n, n_jobs=5, max_depth=50, random_state=0)
+    clf.fit(X_train_2, y_train_2)  
+    # predict the result
+    y_pred = clf.predict(X_test_2)
+    #print ("Random Forest Classifer Result")
+    #print ("Performance - " + str(100*accuracy_score(y_pred, y_test_2)) + "%")
+    accuracy.append(100*accuracy_score(y_pred, y_test_2))
+
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(n_estimators=1000, n_jobs=-1, max_depth=50, random_state=0)
+clf.fit(X_train_2, y_train_2)  
+# predict the result
+y_pred = clf.predict(X_test_2)
+print ("Random Forest Classifer Result")
+print ("Performance - " + str(100*accuracy_score(y_pred, y_test_2)) + "%")
+
+# Plot non-normalized confusion matrix
+plot_confusion_matrix(y_test_2, y_pred, classes=class_names, title='Confusion matrix For Random Forest')
+
+plt.figure(figsize=(10,7))
+plt.plot(nns, accuracy, 'r-', label='Random Forest Accuracy Vs Number of Tress')
+plt.plot(nns, accuracy, 'bx')
+plt.xlabel('Random Forest Tree Sizes')
+plt.ylabel('Random Forest Accuracy')
+plt.legend()
+plt.grid()
+plt.title('Random Forest Accuracy Vs Number of Tress')
+plt.show()
+
+# iterating through all the possible features
+clf = RandomForestClassifier(n_estimators=1000, n_jobs=5, max_depth=50,
+                                 random_state=0)
+for i in range(len(features_selection)):
+    X_train, X_test, y_train, y_test = train_test_split(features_selection[i], encoded_labels, test_size=0.3, shuffle=False)        
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)    
+    print("Result for using Feature Selection - ", features_selection_labels[i])
+    print ("Random Forest Classifer Result")
+    print ("Performance - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+
+from sklearn.svm import SVC
+svc_grid = SVC(gamma='auto')
+# iterating through all the possible features
+for i in range(len(features_selection)):
+    X_train, X_test, y_train, y_test = train_test_split(features_selection[i], encoded_labels, test_size=0.3, shuffle=False)       
+    # commence training - NOTE: It takes hours to be complete
+    svc_grid.fit(X_train, y_train)
+    # predict the result
+    y_pred = svc_grid.predict(X_test)   
+    print("Result for using Feature Selection - ", features_selection_labels[i])
+    print ("SVC Classifer Result")
+    print ("Performance - " + str(100*accuracy_score(y_pred, y_test)) + "%")
