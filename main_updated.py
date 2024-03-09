@@ -315,3 +315,621 @@ plt.title("F score for all Features - Cluster 5")
 best_features = extract_best_features(f_score_1, X1.columns.values, n=10)
 best_features
 
+# Recursive Feature Selection ---------------------------------------------------------------------
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestClassifier
+
+# Random forest is used as the model for RFE
+# RFE for Cluster 1
+model = RandomForestClassifier(n_estimators=100, n_jobs=-1, max_depth=10)
+# for 5 features
+rfe = RFE(estimator=model, n_features_to_select=5)
+rfe = rfe.fit(X1, y1)
+rfe_5_features_clus1 = X1.columns.values[rfe.get_support()]
+# for 10 features
+rfe = RFE(estimator=model, n_features_to_select=10)
+rfe = rfe.fit(X1, y1)
+rfe_10_features_clus1 = X1.columns.values[rfe.get_support()]
+# for 20 features
+rfe = RFE(estimator=model, n_features_to_select= 20)
+rfe = rfe.fit(X1, y1)
+rfe_20_features_clus1  = X1.columns.values[rfe.get_support()]
+# for 30 features
+rfe = RFE(estimator=model, n_features_to_select=30)
+rfe = rfe.fit(X1, y1)
+rfe_30_features_clus1 = X1.columns.values[rfe.get_support()]
+
+# Random forest is used as the model for RFE
+# RFE for Cluster 2
+model = RandomForestClassifier(n_estimators=100, n_jobs=-1, max_depth=10)
+# for 5 features
+rfe = RFE(estimator=model, n_features_to_select=  5)
+rfe = rfe.fit(X2, y2)
+rfe_5_features_clus2 = X2.columns.values[rfe.get_support()]
+# for 10 features
+rfe = RFE(estimator=model, n_features_to_select=  10)
+rfe = rfe.fit(X2, y2)
+rfe_10_features_clus2 = X2.columns.values[rfe.get_support()]
+# for 20 features
+rfe = RFE(estimator=model, n_features_to_select=  20)
+rfe = rfe.fit(X2, y2)
+rfe_20_features_clus2  = X2.columns.values[rfe.get_support()]
+# for 30 features
+rfe = RFE(estimator=model, n_features_to_select=  30)
+rfe = rfe.fit(X2, y2)
+rfe_30_features_clus2 = X2.columns.values[rfe.get_support()]
+
+# Random forest is used as the model for RFE
+# RFE for Cluster 3
+model = RandomForestClassifier(n_estimators=100, n_jobs=-1, max_depth=10)
+# for 5 features
+rfe = RFE(estimator=model, n_features_to_select=5)
+rfe = rfe.fit(X3, y3)
+rfe_5_features_clus3 = X3.columns.values[rfe.get_support()]
+# for 10 features
+rfe = RFE(estimator=model, n_features_to_select= 10)
+rfe = rfe.fit(X3, y3)
+rfe_10_features_clus3 = X3.columns.values[rfe.get_support()]
+# for 20 features
+rfe = RFE(estimator=model, n_features_to_select= 20)
+rfe = rfe.fit(X3, y3)
+rfe_20_features_clus3  = X3.columns.values[rfe.get_support()]
+# for 30 features
+rfe = RFE(estimator=model, n_features_to_select= 30)
+rfe = rfe.fit(X3, y3)
+rfe_30_features_clus3 = X3.columns.values[rfe.get_support()]
+
+# Random forest is used as the model for RFE
+# RFE for Cluster 4
+model = RandomForestClassifier(n_estimators=100, n_jobs=-1, max_depth=10)
+# for 5 features
+rfe = RFE(estimator=model, n_features_to_select=  5)
+rfe = rfe.fit(X4, y4)
+rfe_5_features_clus4 = X4.columns.values[rfe.get_support()]
+# for 10 features
+rfe = RFE(estimator=model, n_features_to_select=  10)
+rfe = rfe.fit(X4, y4)
+rfe_10_features_clus4 = X4.columns.values[rfe.get_support()]
+# for 20 features
+rfe = RFE(estimator=model, n_features_to_select=  20)
+rfe = rfe.fit(X4, y4)
+rfe_20_features_clus4  = X4.columns.values[rfe.get_support()]
+# for 30 features
+rfe = RFE(estimator=model, n_features_to_select= 30)
+rfe = rfe.fit(X4, y4)
+rfe_30_features_clus4 = X4.columns.values[rfe.get_support()]
+
+# Random forest is used as the model for RFE
+# RFE for Cluster 5
+model = RandomForestClassifier(n_estimators=100, n_jobs=-1, max_depth=10)
+# for 5 features
+rfe = RFE(estimator=model, n_features_to_select= 5)
+rfe = rfe.fit(X5, y5)
+rfe_5_features_clus5 = X5.columns.values[rfe.get_support()]
+# for 10 features
+rfe = RFE(estimator=model, n_features_to_select= 10)
+rfe = rfe.fit(X5, y5)
+rfe_10_features_clus5 = X5.columns.values[rfe.get_support()]
+# for 20 features
+rfe = RFE(estimator=model, n_features_to_select= 20)
+rfe = rfe.fit(X5, y5)
+rfe_20_features_clus5  = X5.columns.values[rfe.get_support()]
+# for 30 features
+rfe = RFE(estimator=model, n_features_to_select= 30)
+rfe = rfe.fit(X5, y5)
+rfe_30_features_clus5 = X5.columns.values[rfe.get_support()]
+
+# Plot the result of RFE for 5 features - Cluster 1
+plt.figure(figsize=(10, 5))
+g = sns.barplot(x=rfe_5_features_clus1, y=[1] * len(rfe_5_features_clus1))
+g.set_xticklabels(g.get_xticklabels(), rotation=90)
+plt.title("RFE for 5 Features - Cluster 1")
+plt.show()
+# Plot the result of RFE for 10 features - Cluster 1
+plt.figure(figsize=(10, 5))
+g = sns.barplot(x=rfe_10_features_clus1, y=[1] * len(rfe_10_features_clus1))
+g.set_xticklabels(g.get_xticklabels(), rotation=90)
+plt.title("RFE for 10 Features - Cluster 1")
+plt.show()
+# Plot the result of RFE for 20 features - Cluster 1
+plt.figure(figsize=(10, 5))
+g = sns.barplot(x=rfe_20_features_clus1, y=[1] * len(rfe_20_features_clus1))
+g.set_xticklabels(g.get_xticklabels(), rotation=90)
+plt.title("RFE for 20 Features - Cluster 1")
+plt.show()
+# Plot the result of RFE for 30 features - Cluster 1
+plt.figure(figsize=(10, 5))
+g = sns.barplot(x=rfe_30_features_clus1, y=[1] * len(rfe_30_features_clus1))
+g.set_xticklabels(g.get_xticklabels(), rotation=90)
+plt.title("RFE for 30 Features - Cluster 1")
+plt.show()
+
+#PCA-----------------------------------------------------------------------------------------------
+from sklearn.decomposition import PCA
+
+# PCA for cluster 1
+# for 5 features
+transformer = PCA(n_components=5)
+pca_clus1_5 = transformer.fit_transform(X1)
+# for 10 features
+transformer = PCA(n_components=10)
+pca_clus1_10 = transformer.fit_transform(X1)
+# for 20 features
+transformer = PCA(n_components=20)
+pca_clus1_20 = transformer.fit_transform(X1)
+# for 30 features
+transformer = PCA(n_components=30)
+pca_clus1_30 = transformer.fit_transform(X1)
+
+# ploting the result of PCA 
+num_components = [5, 10, 20, 30]
+# Perform PCA and visualize the results
+for n in num_components:
+    # Perform PCA
+    transformer = PCA(n_components=n)
+    pca_result = transformer.fit_transform(X1)
+    # Create a dataframe with PCA results
+    pca_results_df = pd.DataFrame(pca_result, columns=[f'PC{i+1}' for i in range(n)])
+    # Plot the explained variance ratio
+    plt.figure(figsize=(15, 5))
+    sns.barplot(x=pca_results_df.columns, y=transformer.explained_variance_ratio_)
+    plt.xlabel('Principal Component')
+    plt.ylabel('Explained Variance Ratio')
+    plt.title(f'PCA for {n} Features - Cluster 1')
+    plt.show()
+
+# PCA for cluster 2
+# for 5 features
+transformer = PCA(n_components=5)
+pca_clus2_5 = transformer.fit_transform(X2)
+# for 10 features
+transformer = PCA(n_components=10)
+pca_clus2_10 = transformer.fit_transform(X2)
+# for 20 features
+transformer = PCA(n_components=20)
+pca_clus2_20 = transformer.fit_transform(X2)
+# for 30 features
+transformer = PCA(n_components=30)
+pca_clus2_30 = transformer.fit_transform(X2)
+
+# PCA for cluster 3
+# for 5 features
+transformer = PCA(n_components=5)
+pca_clus3_5 = transformer.fit_transform(X3)
+# for 10 features
+transformer = PCA(n_components=10)
+pca_clus3_10 = transformer.fit_transform(X3)
+# for 20 features
+transformer = PCA(n_components=20)
+pca_clus3_20 = transformer.fit_transform(X3)
+# for 30 features
+transformer = PCA(n_components=30)
+pca_clus3_30 = transformer.fit_transform(X3)
+
+# PCA for cluster 4
+# for 5 features
+transformer = PCA(n_components=5)
+pca_clus4_5 = transformer.fit_transform(X4)
+# for 10 features
+transformer = PCA(n_components=10)
+pca_clus4_10 = transformer.fit_transform(X4)
+# for 20 features
+transformer = PCA(n_components=20)
+pca_clus4_20 = transformer.fit_transform(X4)
+# for 30 features
+transformer = PCA(n_components=30)
+pca_clus4_30 = transformer.fit_transform(X4)
+
+# PCA for cluster 5
+# for 5 features
+transformer = PCA(n_components=5)
+pca_clus5_5 = transformer.fit_transform(X5)
+# for 10 features
+transformer = PCA(n_components=10)
+pca_clus5_10 = transformer.fit_transform(X5)
+# for 20 features
+transformer = PCA(n_components=20)
+pca_clus5_20 = transformer.fit_transform(X5)
+# for 30 features
+transformer = PCA(n_components=30)
+pca_clus5_30 = transformer.fit_transform(X5)
+
+# Classification of Article Popularity
+# encoding the label set with a label encoder
+from sklearn.preprocessing import LabelEncoder
+labelEn = LabelEncoder()
+encoded_labels = labelEn.fit_transform(y1.values)
+class_names = labelEn.classes_
+class_names
+
+# Splitting the data for Training and Testing
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, make_scorer
+from sklearn.metrics import recall_score
+
+# KNN ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# PCA Features(KNN)
+# defining the model
+from sklearn.neighbors import KNeighborsClassifier
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+pca_data = [pca_clus1_5, pca_clus1_10, pca_clus1_20, pca_clus1_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 1::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+pca_data = [pca_clus2_5, pca_clus2_10, pca_clus2_20, pca_clus2_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 2::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+pca_data = [pca_clus3_5, pca_clus3_10, pca_clus3_20, pca_clus3_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 3::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+pca_data = [pca_clus4_5, pca_clus4_10, pca_clus4_20, pca_clus4_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 4::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+pca_data = [pca_clus5_5, pca_clus5_10, pca_clus5_20, pca_clus5_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 5::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+#### KNN Cross-Validation
+import matplotlib.pyplot as plt
+# Cros Validation for any of the features
+k_range = np.arange(1,120)
+accuracy = []
+for n in k_range:
+    neigh = KNeighborsClassifier(n_neighbors=n, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    #print ("Random Forest Classifer Result")
+    #print ("Performance - " + str(100*accuracy_score(y_pred, y_test_2)) + "%")
+    accuracy.append(100*accuracy_score(y_pred, y_test))
+plt.figure(figsize=(20,13))
+plt.plot(k_range, accuracy, 'r-', label='KNN Accuracy Vs KNN Neighbors size')
+plt.plot(k_range, accuracy, 'bx')
+plt.xlabel('KNN Neighbors size')
+plt.ylabel('KNN Accuracy')
+plt.legend()
+plt.grid()
+plt.title('KNN Accuracy Vs Neighbors size')
+plt.show()
+
+# Mutual Information(KNN)-------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus1, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 1::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus2, X2.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 2::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus3, X3.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 3::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus4, X4.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 4::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus5, X5.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 5::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# F-score (KNN)-----------------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 1::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2, X2.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 2::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3, X3.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 3::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4, X4.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 4::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5, X5.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 5::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# RFE(KNN)-------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+rfe_features_clus1 = [rfe_5_features_clus1, rfe_10_features_clus1, rfe_20_features_clus1, rfe_30_features_clus1]
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(rfe_features_clus1[i]))
+    data_clus_rfe = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 1::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+rfe_features_clus2 = [rfe_5_features_clus2, rfe_10_features_clus2, rfe_20_features_clus2, rfe_30_features_clus2]
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(rfe_features_clus2[i]))
+    data_clus_rfe = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 2::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+rfe_features_clus3 = [rfe_5_features_clus3, rfe_10_features_clus3, rfe_20_features_clus3, rfe_30_features_clus3]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(rfe_features_clus3[i]))
+    data_clus_rfe = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 3::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+rfe_features_clus4 = [rfe_5_features_clus4, rfe_10_features_clus4, rfe_20_features_clus4, rfe_30_features_clus4]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(rfe_features_clus4[i]))
+    data_clus_rfe = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 4::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+rfe_features_clus5 = [rfe_5_features_clus5, rfe_10_features_clus5, rfe_20_features_clus5, rfe_30_features_clus5]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(rfe_features_clus5[i]))
+    data_clus_rfe = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 3::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# Random Forest ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PCA
