@@ -1608,3 +1608,488 @@ for i in range(len(features_list)):
     print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
 
 # SVM (F-Score) ---------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 1:: F-Score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 2::F-Score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 3::F-Score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 4::F-Score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 5::F-Score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# Classification of the Data Channel an article was presented 
+data_weekdays = copy(data.iloc[:, :-1])
+data_weekdays
+
+# combine the data_channels as one
+# Merging the data channels as one single column
+DataChannelMerge=data[[' data_channel_is_lifestyle',' data_channel_is_entertainment' ,' data_channel_is_bus',
+                        ' data_channel_is_socmed' ,' data_channel_is_tech',' data_channel_is_world' ]]
+#logic to merge data channel
+DataChannel_arr=[]
+for r in list(range(DataChannelMerge.shape[0])):
+    if (((DataChannelMerge.iloc[r,0])==0) and ((DataChannelMerge.iloc[r,1])==0) and ((DataChannelMerge.iloc[r,2])==0) and ((DataChannelMerge.iloc[r,3])==0) and ((DataChannelMerge.iloc[r,4])==0) and ((DataChannelMerge.iloc[r,5])==0)):
+        DataChannel_arr.append('Others')
+    for c in list(range(DataChannelMerge.shape[1])):
+        if ((c==0) and (DataChannelMerge.iloc[r,c])==1):
+            DataChannel_arr.append('Lifestyle')
+        elif ((c==1) and (DataChannelMerge.iloc[r,c])==1):
+            DataChannel_arr.append('Entertainment')
+        elif ((c==2) and (DataChannelMerge.iloc[r,c])==1):
+            DataChannel_arr.append('Business')
+        elif ((c==3) and (DataChannelMerge.iloc[r,c])==1):
+            DataChannel_arr.append('Social Media')
+        elif ((c==4) and (DataChannelMerge.iloc[r,c])==1):
+            DataChannel_arr.append('Tech')
+        elif ((c==5) and (DataChannelMerge.iloc[r,c])==1):
+            DataChannel_arr.append('World')
+
+# merge the the new data into the dataframe
+data_weekdays.insert(loc=58, column='channels', value=DataChannel_arr)
+# Now I drop the old data
+data_weekdays.drop(labels=[' data_channel_is_lifestyle',' data_channel_is_entertainment' ,' data_channel_is_bus',
+                        ' data_channel_is_socmed' ,' data_channel_is_tech',' data_channel_is_world'], axis = 1, inplace=True)
+print(data_weekdays.shape)
+data_weekdays.head(n=4)
+
+# Evaluating features (sensors) contribution towards the label
+fig = plt.figure(figsize=(10,5))
+ax = sns.countplot(x='channels',data=data_weekdays,alpha=0.5)
+
+# Fetch the counts for each class
+class_counts = data_weekdays.groupby('channels').size().reset_index()
+class_counts.columns = ['channels','No of articles']
+class_counts
+
+# transform the data
+encoded_labels = labelEn.fit_transform(data_weekdays.loc[:, 'channels'].values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+# the feautures are stored in the seconds column
+X_train, X_test, y_train, y_test = train_test_split(data_weekdays.iloc[:, :-1], encoded_labels, test_size=0.2, shuffle=False)
+clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                             random_state=0)
+clf.fit(X_train, y_train)
+# predict the result
+y_pred = clf.predict(X_test)
+print ("Random Forest - ::Full - ")
+print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+tsne = TSNE(n_components=2, n_iter=300)
+reduced_tsne = tsne.fit_transform(data_weekdays.iloc[:,:-1])
+# plotting the clusters TSNE
+plt.figure(figsize=(10,10))
+plt.plot(reduced_tsne[:,0], reduced_tsne[:,1], 'r.')
+plt.title('TSNE Transformation')
+plt.show()
+
+# Predicts the clusters
+kmeans=KMeans(init='k-means++',n_clusters=5)
+kmeans.fit(reduced_tsne)
+kmeans_preds=kmeans.predict(reduced_tsne)
+
+# fussing the cluster data into the dataframe
+data_weekdays2=pd.concat([data_weekdays.reset_index(drop=True), pd.DataFrame(kmeans_preds, columns=['clusters'])],axis=1)
+
+# extrating individual cluster from the data
+cluster1_data_weekdays = data_weekdays2[data_weekdays2['clusters'] == 0]
+cluster2_data_weekdays = data_weekdays2[data_weekdays2['clusters'] == 1]
+cluster3_data_weekdays = data_weekdays2[data_weekdays2['clusters'] == 2]
+cluster4_data_weekdays = data_weekdays2[data_weekdays2['clusters'] == 3]
+cluster5_data_weekdays = data_weekdays2[data_weekdays2['clusters'] == 4]
+print ('Cluster1 size: ',cluster1_data_weekdays.shape)
+print ('Cluster2 size: ',cluster2_data_weekdays.shape)
+print ('Cluster3 size: ',cluster3_data_weekdays.shape)
+print ('Cluster4 size: ',cluster4_data_weekdays.shape)
+print ('Cluster5 size: ',cluster5_data_weekdays.shape)
+
+### F- score
+
+# mututal information for cluster 3
+X1_week = cluster1_data_weekdays.iloc[:, :-2]
+y1_week = cluster1_data_weekdays.iloc[:, -2]
+# mututal information for cluster 3
+X2_week = cluster2_data_weekdays.iloc[:, :-2]
+y2_week = cluster2_data_weekdays.iloc[:, -2]
+# mututal information for cluster 3
+X3_week = cluster3_data_weekdays.iloc[:, :-2]
+y3_week = cluster3_data_weekdays.iloc[:, -2]
+# mututal information for cluster 3
+X4_week = cluster4_data_weekdays.iloc[:, :-2]
+y4_week = cluster4_data_weekdays.iloc[:, -2]
+# mututal information for cluster 3
+X5_week = cluster5_data_weekdays.iloc[:, :-2]
+y5_week = cluster5_data_weekdays.iloc[:, -2]
+
+# F-Score for cluster 1
+f_test_data = f_classif(X1_week, y1_week)
+f_score_1_wk=f_test_data[0]
+# F-Score for cluster 5
+f_test_data = f_classif(X2_week, y2_week)
+f_score_2_wk=f_test_data[0]
+# F-Score for cluster 5
+f_test_data = f_classif(X3_week, y3_week)
+f_score_3_wk=f_test_data[0]
+# F-Score for cluster 4
+f_test_data = f_classif(X4_week, y4_week)
+f_score_4_wk=f_test_data[0]
+# F-Score for cluster 5
+f_test_data = f_classif(X5_week, y5_week)
+f_score_5_wk=f_test_data[0]
+
+#KNN (DATA CHANNEL PREDICTION)-----------------------------------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1_wk, X1_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 1::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2_wk, X2_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 2::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3_wk, X3_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 3::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4_wk, X4_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 4::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5_wk, X5_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    print ("KNN - Cluster 5::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+### Random forest (DATA CHANNEL PREDICTION) ---------------------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1_wk, X1_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 1::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2_wk, X2_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 2::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3_wk, X3_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 3::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4_wk, X4_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 4::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5_wk, X5_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 5::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# SVC (DATA CHANNEL PREDICTION)----------------------------------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1_wk, X1_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 1::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2_wk, X2_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 2::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3_wk, X3_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 3::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4_wk, X4_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 4::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5_week.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5_wk, X5_week.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5_week.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5_week.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 5::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='weighted')))
