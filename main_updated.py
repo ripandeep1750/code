@@ -932,4 +932,679 @@ for i in range(len(features_list)):
     print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
 
 # Random Forest ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-PCA
+# PCA
+# defining the model
+from sklearn.ensemble import RandomForestClassifier
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+pca_data = [pca_clus1_5, pca_clus1_10, pca_clus1_20, pca_clus1_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 1::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# RandomForest(MI) ---------------------------------------------------------------------------------------------------------
+from sklearn.ensemble import RandomForestClassifier
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus1, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=1000, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 1::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus2, X2.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=1000, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 2::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus3, X3.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    clf = RandomForestClassifier(n_estimators=1000, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 3::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus4, X4.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    clf = RandomForestClassifier(n_estimators=1000, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 4::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus5, X5.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    clf = RandomForestClassifier(n_estimators=1000, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 5::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+pca_data = [pca_clus2_5, pca_clus2_10, pca_clus2_20, pca_clus2_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 2::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+pca_data = [pca_clus3_5, pca_clus3_10, pca_clus3_20, pca_clus3_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=100,
+                                random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 3::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+pca_data = [pca_clus4_5, pca_clus4_10, pca_clus4_20, pca_clus4_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 4::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+pca_data = [pca_clus5_5, pca_clus5_10, pca_clus5_20, pca_clus5_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    # For PCA Feature Extraction
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=100,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 5::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+#### Cross validation For Random Forest
+nns = [1, 5, 10, 50, 100, 200, 500, 1000, 2000, 3000]
+accuracy = []
+for n in nns:
+    clf = RandomForestClassifier(n_estimators=n, n_jobs=5, max_depth=500,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    #print ("Random Forest Classifer Result")
+    #print ("Performance - " + str(100*accuracy_score(y_pred, y_test_2)) + "%")
+    accuracy.append(100*accuracy_score(y_pred, y_test))
+plt.figure(figsize=(10,7))
+plt.plot(nns, accuracy, 'r-', label='Random Forest Accuracy Vs Number of Tress')
+plt.plot(nns, accuracy, 'bx')
+plt.xlabel('Random Forest Tree Sizes')
+plt.ylabel('Random Forest Accuracy')
+plt.legend()
+plt.grid()
+plt.title('Random Forest Accuracy Vs Number of Tress')
+plt.show()
+
+# Random Forest (F-Score)-------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 1::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2, X2.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 2::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3, X3.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 3::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4, X4.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 4::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5, X5.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 5::F-score - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# Random Forest (RFE)-----------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+rfe_features_clus1 = [rfe_5_features_clus1, rfe_10_features_clus1, rfe_20_features_clus1, rfe_30_features_clus1]
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(rfe_features_clus1[i]))
+    data_clus_rfe = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 1::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+rfe_features_clus2 = [rfe_5_features_clus2, rfe_10_features_clus2, rfe_20_features_clus2, rfe_30_features_clus2]
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(rfe_features_clus2[i]))
+    data_clus_rfe = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 2::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+rfe_features_clus3 = [rfe_5_features_clus3, rfe_10_features_clus3, rfe_20_features_clus3, rfe_30_features_clus3]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(rfe_features_clus3[i]))
+    data_clus_rfe = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 3::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+rfe_features_clus4 = [rfe_5_features_clus4, rfe_10_features_clus4, rfe_20_features_clus4, rfe_30_features_clus4]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(rfe_features_clus4[i]))
+    data_clus_rfe = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 4::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+rfe_features_clus5 = [rfe_5_features_clus5, rfe_10_features_clus5, rfe_20_features_clus5, rfe_30_features_clus5]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(rfe_features_clus5[i]))
+    data_clus_rfe = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50,
+                                 random_state=0)
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("Random Forest - Cluster 5::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# SVM(RFE)+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+from sklearn.svm import SVC
+
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+rfe_features_clus1 = [rfe_5_features_clus1, rfe_10_features_clus1, rfe_20_features_clus1, rfe_30_features_clus1]
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(rfe_features_clus1[i]))
+    data_clus_rfe = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 1::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+rfe_features_clus2 = [rfe_5_features_clus2, rfe_10_features_clus2, rfe_20_features_clus2, rfe_30_features_clus2]
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(rfe_features_clus2[i]))
+    data_clus_rfe = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 2::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+rfe_features_clus3 = [rfe_5_features_clus3, rfe_10_features_clus3, rfe_20_features_clus3, rfe_30_features_clus3]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(rfe_features_clus3[i]))
+    data_clus_rfe = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 3::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+rfe_features_clus4 = [rfe_5_features_clus4, rfe_10_features_clus4, rfe_20_features_clus4, rfe_30_features_clus4]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(rfe_features_clus4[i]))
+    data_clus_rfe = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 4::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+rfe_features_clus5 = [rfe_5_features_clus5, rfe_10_features_clus5, rfe_20_features_clus5, rfe_30_features_clus5]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(features_list)):
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(rfe_features_clus5[i]))
+    data_clus_rfe = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_rfe, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 5::RFE - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# SVM (PCA)-------------------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+pca_data = [pca_clus1_5, pca_clus1_10, pca_clus1_20, pca_clus1_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 1::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+pca_data = [pca_clus2_5, pca_clus2_10, pca_clus2_20, pca_clus2_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 2::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+pca_data = [pca_clus3_5, pca_clus3_10, pca_clus3_20, pca_clus3_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 3::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+pca_data = [pca_clus4_5, pca_clus4_10, pca_clus4_20, pca_clus4_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 4::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+pca_data = [pca_clus5_5, pca_clus5_10, pca_clus5_20, pca_clus5_30]
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 5::PCA - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+SVM(MI)-------------------------------------------------------------------------------------------------------------
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus1, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X1.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 1:: MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus2, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X2.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 2::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus3, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X3.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 3::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus4, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X4.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 4::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+features_list = ['5 Features', '10 Features', '20 Features', '30 Features']
+n_features = [5, 10, 20, 30]
+for i in range(len(features_list)):
+    best_features = extract_best_features(mi_data_clus5, X1.columns.values, n=n_features[i])
+    # the feautures are stored in the seconds column
+    drop_these = list(set(X5.columns.values) - set(best_features[:,1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.2, shuffle=False)
+    clf = SVC(gamma='auto')
+    # commence training - NOTE: It takes hours to be complete
+    clf.fit(X_train, y_train)
+    
+    # predict the result
+    y_pred = clf.predict(X_test)
+    print ("SVC - Cluster 5::MI - " + str(features_list[i]))
+    print ("Accuracy - " + str(100*accuracy_score(y_pred, y_test)) + "%")
+    print ("Recall - " + str(recall_score(y_test, y_pred, average='micro')))
+
+# SVM (F-Score) ---------------------------------------------------------------------------------------------------
