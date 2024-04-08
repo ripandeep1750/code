@@ -1,0 +1,894 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=DeprecationWarning)
+warnings.simplefilter(action='ignore', category=RuntimeWarning)
+  
+# Libaries import
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import matplotlib.pyplot as plt
+import seaborn as sns
+from copy import copy
+from sklearn.manifold import TSNE
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+data = pd.read_csv("/content/drive/MyDrive/structural virality/dataset/nytpopular.csv")
+data.head(n=4)
+
+data.drop(labels=['url', 'date', 'bag_of_phrases'], axis = 1, inplace=True)
+data.head(n=4)
+original_data = copy(data)
+
+data.describe()
+
+like_data = np.sort(data['like_count'].values)
+print(like_data.shape)
+leng = like_data.shape[0]
+
+middle = like_data[int(leng*0.5)-1]
+middle
+
+like_label = list()
+for like in data['like_count']:
+    if like <= 285:
+        like_label.append('Unpopular')
+    else:
+        like_label.append('Popular')
+
+# Update this class label into the dataframe
+data = pd.concat([data.reset_index(drop=True), pd.DataFrame(like_label, columns=['popularity'])], axis=1)
+data.head(4)
+
+fig = plt.figure(figsize=(5,5))
+ax = sns.countplot(x='popularity',data=data,alpha=0.5)
+data_channel_data = data.groupby('popularity').size().reset_index()
+data_channel_data.columns = ['popularity','No of articles']
+data_channel_data
+
+print("Skewness: %f" % data['like_count'].skew())
+print("Kurtosis: %f" % data['like_count'].kurt())
+from scipy.stats import norm, probplot
+
+#histogram and normal probability plot
+temp_data = data[data['like_count'] <= 100000]
+fig,ax = plt.subplots(figsize=(5,5))
+sns.distplot(data['like_count'], fit=norm);
+fig = plt.figure()
+res = probplot(data['like_count'], plot=plt)
+
+#applying log transformation
+new_like_data = copy(data)
+
+new_like_data.loc[new_like_data['like_count'] > 0, 'like_count'] = np.log(data.loc[data['like_count'] > 0, 'like_count'])
+new_like_log = new_like_data['like_count']
+#transformed histogram and normal probability plot
+fig,ax = plt.subplots(figsize=(5,5))
+sns.distplot(new_like_log, fit=norm);
+fig = plt.figure()
+res = probplot(new_like_log, plot=plt)
+
+# use log transformation to transform each features to a normal distribution
+
+# note log transformation can only be performed on data without zero value
+for col in data.iloc[:,:-1].columns:
+    #applying log transformation
+    temp = data[data[col] == 0]
+    # only apply to non-zero features
+    if temp.shape[0] == 0:
+        data[col] = np.log(data[col])
+        print (col)
+
+# before log transformation
+sns.distplot(original_data['id'], fit=norm);
+
+# after log transformation
+sns.distplot(data['id'], fit=norm);
+
+# Scale features using statistics that are robust to outliers.
+from sklearn.preprocessing import RobustScaler
+scaler = RobustScaler()
+
+# scalled all the feature selections aside shares and populairty
+scalled_data = scaler.fit_transform(data.iloc[:, :-2])
+
+# update the dataframe back with the scalled data
+data.iloc[:, :-2] = scalled_data
+
+# the data after log transformation and robust scaler
+data.describe()
+
+data.iloc[:,:-2]
+
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+
+# Kmeans perform poorly on high feature space
+pca = PCA(n_components=2)
+reduced_data = pca.fit_transform(data.iloc[:,:-2])
+reduced_data.shape
+
+# plotting the clusters PCA
+plt.figure(figsize=(5,5))
+plt.plot(reduced_data[:,0], reduced_data[:,1], 'r.')
+plt.title('PCA Transformation')
+
+plt.show()
+
+tsne = TSNE(n_components=2, n_iter=300)
+reduced_tsne = tsne.fit_transform(data.iloc[:,:-2])
+
+# plotting the clusters TSNE
+plt.figure(figsize=(5,5))
+plt.plot(reduced_tsne[:,0], reduced_tsne[:,1], 'r.')
+plt.title('TSNE Transformation')
+plt.show()
+
+k=list(range(1,9))
+ssd=[]
+for i in k:
+    kmeans=KMeans(n_clusters=i).fit(reduced_tsne)
+    ssd.append(kmeans.inertia_)
+
+plt.plot(k,ssd,'o-')
+plt.xlabel('k')
+plt.ylabel('Sum of squared error')
+plt.show()
+
+# Predicts the clusters
+kmeans=KMeans(init='k-means++',n_clusters=5)
+kmeans.fit(reduced_tsne)
+kmeans_preds=kmeans.predict(reduced_tsne)
+
+centroids = kmeans.cluster_centers_
+clusters = np.unique(kmeans_preds)
+
+# ploting the result of of the clusters
+ax, fig = plt.subplots(figsize=(10,7))
+plt.scatter(centroids[:, 0], centroids[:, 1],
+            marker='x', s=169, linewidths=3,
+            color='r', zorder=10)
+
+# ploting the cluster numbers
+for i in range(clusters.shape[0]):
+    plt.text(centroids[i, 0], centroids[i, 1], clusters[i], fontsize=20, color='white',
+             bbox=dict(facecolor='black', alpha=0.5))
+
+plt.scatter(reduced_tsne[:,0],reduced_tsne[:,1],c=kmeans_preds,marker='.')
+plt.show()
+
+# fussing the cluster data into the dataframe
+data1=pd.concat([data.reset_index(drop=True), pd.DataFrame(kmeans_preds, columns=['clusters'])],axis=1)
+
+data1.shape
+
+# extrating individual cluster from the data
+cluster1_data = data1[data1['clusters'] == 0]
+cluster2_data = data1[data1['clusters'] == 1]
+cluster3_data = data1[data1['clusters'] == 2]
+cluster4_data = data1[data1['clusters'] == 3]
+cluster5_data = data1[data1['clusters'] == 4]
+print ('Cluster1 size: ',cluster1_data.shape)
+print ('Cluster2 size: ',cluster2_data.shape)
+print ('Cluster3 size: ',cluster3_data.shape)
+print ('Cluster4 size: ',cluster4_data.shape)
+print ('Cluster5 size: ',cluster5_data.shape)
+
+# Mutual Information computation
+# our label is the popularity and will be disregarding the shares data
+from sklearn.feature_selection import mutual_info_classif
+
+# Mutual information for cluster 1
+X1 = cluster1_data.iloc[:, :-3]
+y1 = cluster1_data.iloc[:, -2]
+mi_data_clus1 = mutual_info_classif(X1, y1)
+
+# mututal information for cluster 2
+X2 = cluster2_data.iloc[:, :-3]
+y2 = cluster2_data.iloc[:, -2]
+mi_data_clus2 = mutual_info_classif(X2, y2)
+
+# mututal information for cluster 3
+X3 = cluster3_data.iloc[:, :-3]
+y3 = cluster3_data.iloc[:, -2]
+mi_data_clus3 = mutual_info_classif(X3, y3)
+# mututal information for cluster 4
+X4 = cluster4_data.iloc[:, :-3]
+y4 = cluster4_data.iloc[:, -2]
+mi_data_clus4 = mutual_info_classif(X4, y4)
+# mututal information for cluster 5
+X5 = cluster5_data.iloc[:, :-3]
+y5 = cluster5_data.iloc[:, -2]
+mi_data_clus5 = mutual_info_classif(X5, y5)
+
+  ### an helper function for extracting the best features possible
+def extract_best_features(feature_scores, feature_col, n=5, sort_metric=False):
+    # this function extracts out the best features.
+    # inputs
+    temp = np.hstack((feature_scores.reshape(-1,1), feature_col.reshape(-1,1)))
+    features = pd.DataFrame(temp, columns=['score', 'name'])
+    # sort the features
+    features = features.sort_values(by=['score'], ascending=sort_metric).reset_index(drop=True)
+    # extract the best features
+    best_features = features.iloc[:n, :].to_numpy()
+    return best_features
+
+best_features = extract_best_features(mi_data_clus4, X4.columns.values, n=10)
+best_features
+
+from sklearn.feature_selection import f_classif
+# F-Score for cluster 1
+f_test_data = f_classif(X1, y1)
+f_score_1=f_test_data[0]
+
+# F-Score for cluster 2
+f_test_data = f_classif(X2, y2)
+f_score_2=f_test_data[0]
+
+# F-Score for cluster 3
+f_test_data = f_classif(X3, y3)
+f_score_3=f_test_data[0]
+
+# F-Score for cluster 4
+f_test_data = f_classif(X4, y4)
+f_score_4=f_test_data[0]
+
+# F-Score for cluster 5
+f_test_data = f_classif(X5, y5)
+f_score_5=f_test_data[0]
+
+best_features = extract_best_features(f_score_1, X1.columns.values, n=10)
+best_features
+
+from sklearn.decomposition import PCA
+#########################################################
+# PCA for cluster 1
+# for 1 features
+transformer = PCA(n_components=1)
+pca_clus1_1 = transformer.fit_transform(X1)
+# for 2 features
+transformer = PCA(n_components=2)
+pca_clus1_2 = transformer.fit_transform(X1)
+# for 3 features
+transformer = PCA(n_components=3)
+pca_clus1_3 = transformer.fit_transform(X1)
+
+# PCA for cluster 2
+# for 1 features
+transformer = PCA(n_components=1)
+pca_clus2_1 = transformer.fit_transform(X2)
+# for 2 features
+transformer = PCA(n_components=2)
+pca_clus2_2 = transformer.fit_transform(X2)
+# for 3 features
+transformer = PCA(n_components=3)
+pca_clus2_3 = transformer.fit_transform(X2)
+
+# PCA for cluster 3
+# for 1 features
+transformer = PCA(n_components=1)
+pca_clus3_1 = transformer.fit_transform(X3)
+# for 2 features
+transformer = PCA(n_components=2)
+pca_clus3_2 = transformer.fit_transform(X3)
+# for 3 features
+transformer = PCA(n_components=3)
+pca_clus3_3 = transformer.fit_transform(X3)
+
+# PCA for cluster 4
+# for 1 features
+transformer = PCA(n_components=1)
+pca_clus4_1 = transformer.fit_transform(X4)
+# for 2 features
+transformer = PCA(n_components=2)
+pca_clus4_2 = transformer.fit_transform(X4)
+# for 3 features
+transformer = PCA(n_components=3)
+pca_clus4_3 = transformer.fit_transform(X4)
+
+# PCA for cluster 5
+# for 1 features
+transformer = PCA(n_components=1)
+pca_clus5_1 = transformer.fit_transform(X5)
+# for 2 features
+transformer = PCA(n_components=2)
+pca_clus5_2 = transformer.fit_transform(X5)
+# for 3 features
+transformer = PCA(n_components=3)
+pca_clus5_3 = transformer.fit_transform(X5)
+
+# encoding the label set with a label encoder
+from sklearn.preprocessing import LabelEncoder
+labelEn = LabelEncoder()
+encoded_labels = labelEn.fit_transform(y1.values)
+class_names = labelEn.classes_
+class_names
+
+# Splitting the data for Training and Testing
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, make_scorer
+
+# Initialize an empty nested list to store accuracy values
+accuracy_table = []
+
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['1 Features', '2 Features', '3 Features']
+# n_features = [5, 10, 20, 30]
+pca_data = [pca_clus1_1, pca_clus1_2, pca_clus1_3]
+cluster1_accuracy = []  # Accuracy values for Cluster 1
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster1_accuracy.append(accuracy)
+
+accuracy_table.append(cluster1_accuracy)
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+pca_data = [pca_clus2_1, pca_clus2_2, pca_clus2_3]
+cluster2_accuracy = []  # Accuracy values for Cluster 2
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster2_accuracy.append(accuracy)
+
+accuracy_table.append(cluster2_accuracy)
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+pca_data = [pca_clus3_1, pca_clus3_2, pca_clus3_3]
+cluster3_accuracy = []  # Accuracy values for Cluster 3
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster3_accuracy.append(accuracy)
+
+accuracy_table.append(cluster3_accuracy)
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+pca_data = [pca_clus4_1, pca_clus4_2, pca_clus4_3]
+cluster4_accuracy = []  # Accuracy values for Cluster 4
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster4_accuracy.append(accuracy)
+
+accuracy_table.append(cluster4_accuracy)
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+pca_data = [pca_clus5_1, pca_clus5_2, pca_clus5_3]
+cluster5_accuracy = []  # Accuracy values for Cluster 5
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster5_accuracy.append(accuracy)
+
+accuracy_table.append(cluster5_accuracy)
+# Print the accuracy table in tabular format
+print("KNN (PCA) \t1 Features\t2 Features\t3 Features")
+for i in range(len(accuracy_table)):
+    print(f"Cluster {i+1}\t{accuracy_table[i][0]:.2f}%\t\t{accuracy_table[i][1]:.2f}%\t\t{accuracy_table[i][2]:.2f}")
+
+  # Initialize an empty nested list to store accuracy values
+accuracy_table = []
+
+# For Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['1 Features', '2 Features', '3 Features']
+n_features = [1, 2, 3]
+cluster1_accuracy = []  # Accuracy values for Cluster 1
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1, X1.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X1.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster1_accuracy.append(accuracy)
+
+accuracy_table.append(cluster1_accuracy)
+
+# For Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+cluster2_accuracy = []  # Accuracy values for Cluster 2
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2, X2.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X2.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster2_accuracy.append(accuracy)
+
+accuracy_table.append(cluster2_accuracy)
+
+# For Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+cluster3_accuracy = []  # Accuracy values for Cluster 3
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3, X3.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X3.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster3_accuracy.append(accuracy)
+
+accuracy_table.append(cluster3_accuracy)
+
+# For Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+cluster4_accuracy = []  # Accuracy values for Cluster 4
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4, X4.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X4.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster4_accuracy.append(accuracy)
+
+accuracy_table.append(cluster4_accuracy)
+
+# For Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+cluster5_accuracy = []  # Accuracy values for Cluster 5
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5, X5.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X5.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    neigh = KNeighborsClassifier(n_neighbors=63, n_jobs=-1)
+    neigh.fit(X_train, y_train)
+    # predict the result
+    y_pred = neigh.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster5_accuracy.append(accuracy)
+
+accuracy_table.append(cluster5_accuracy)
+# Print the accuracy table in tabular format
+print("KNN (F-score) \t1 Features\t2 Features\t3 Features")
+for i in range(len(accuracy_table)):
+    print(f"Cluster {i+1}\t{accuracy_table[i][0]:.2f}%\t\t{accuracy_table[i][1]:.2f}%\t\t{accuracy_table[i][2]:.2f}%")
+
+  from sklearn.ensemble import RandomForestClassifier
+
+# Initialize an empty nested list to store accuracy values
+accuracy_table = []
+
+# Random Forest - Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['1 Features', '2 Features', '3 Features']
+pca_data = [pca_clus1_1, pca_clus1_2, pca_clus1_3]
+cluster1_accuracy = []  # Accuracy values for Cluster 1
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster1_accuracy.append(accuracy)
+
+accuracy_table.append(cluster1_accuracy)
+
+# Random Forest - Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+cluster2_accuracy = []  # Accuracy values for Cluster 2
+pca_data = [pca_clus2_1, pca_clus2_2, pca_clus2_3]
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster2_accuracy.append(accuracy)
+
+accuracy_table.append(cluster2_accuracy)
+
+# Random Forest - Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+cluster3_accuracy = []  # Accuracy values for Cluster 3
+pca_data = [pca_clus3_1, pca_clus3_2, pca_clus3_3]
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster3_accuracy.append(accuracy)
+
+accuracy_table.append(cluster3_accuracy)
+
+# Random Forest - Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+cluster4_accuracy = []  # Accuracy values for Cluster 4
+pca_data = [pca_clus4_1, pca_clus4_2, pca_clus4_3]
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster4_accuracy.append(accuracy)
+
+accuracy_table.append(cluster4_accuracy)
+
+# Random Forest - Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+cluster5_accuracy = []  # Accuracy values for Cluster 5
+pca_data = [pca_clus5_1, pca_clus5_2, pca_clus5_3]
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=500, n_jobs=5, max_depth=50, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster5_accuracy.append(accuracy)
+
+accuracy_table.append(cluster5_accuracy)
+
+# Print the accuracy table in tabular format
+print("RF(PCA)\t1 Features\t2 Features\t3 Features")
+for i in range(len(accuracy_table)):
+    print(f"Cluster {i+1}\t{accuracy_table[i][0]:.2f}%\t\t{accuracy_table[i][1]:.2f}%\t\t{accuracy_table[i][2]:.2f}%")
+
+  from sklearn.ensemble import RandomForestClassifier
+
+# Initialize an empty nested list to store accuracy values
+accuracy_table = []
+
+# Random Forest - Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['1 Features', '2 Features', '3 Features']
+n_features = [1, 2, 3]
+cluster1_accuracy = []  # Accuracy values for Cluster 1
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1, X1.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X1.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=650, n_jobs=5, max_depth=40, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster1_accuracy.append(accuracy)
+
+accuracy_table.append(cluster1_accuracy)
+
+# Random Forest - Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+cluster2_accuracy = []  # Accuracy values for Cluster 2
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2, X2.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X2.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=650, n_jobs=5, max_depth=40, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster2_accuracy.append(accuracy)
+
+accuracy_table.append(cluster2_accuracy)
+
+# Random Forest - Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+cluster3_accuracy = []  # Accuracy values for Cluster 3
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3, X3.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X3.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=650, n_jobs=5, max_depth=40, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster3_accuracy.append(accuracy)
+
+accuracy_table.append(cluster3_accuracy)
+
+# Random Forest - Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+cluster4_accuracy = []  # Accuracy values for Cluster 4
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4, X4.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X4.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=650, n_jobs=5, max_depth=40, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster4_accuracy.append(accuracy)
+
+accuracy_table.append(cluster4_accuracy)
+
+# Random Forest - Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+cluster5_accuracy = []  # Accuracy values for Cluster 5
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5, X5.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X5.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = RandomForestClassifier(n_estimators=650, n_jobs=5, max_depth=40, random_state=0)
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster5_accuracy.append(accuracy)
+
+accuracy_table.append(cluster5_accuracy)
+
+# Print the accuracy table in tabular format
+print("RF (F-Score)\t1 Features\t2 Features\t3 Features")
+for i in range(len(accuracy_table)):
+    print(f"Cluster {i+1}\t{accuracy_table[i][0]:.2f}%\t\t{accuracy_table[i][1]:.2f}%\t\t{accuracy_table[i][2]:.2f}%")
+
+  from sklearn.svm import SVC
+from sklearn.svm import SVC
+
+# Initialize an empty nested list to store accuracy values
+accuracy_table = []
+
+# SVM - Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['1 Features', '2 Features', '3 Features']
+pca_data = [pca_clus1_1, pca_clus1_2, pca_clus1_3]
+cluster1_accuracy = []  # Accuracy values for Cluster 1
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster1_accuracy.append(accuracy)
+
+accuracy_table.append(cluster1_accuracy)
+
+# SVM - Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+pca_data = [pca_clus2_1, pca_clus2_2, pca_clus2_3]
+cluster2_accuracy = []  # Accuracy values for Cluster 2
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster2_accuracy.append(accuracy)
+
+accuracy_table.append(cluster2_accuracy)
+
+# SVM - Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+pca_data = [pca_clus3_1, pca_clus3_2, pca_clus3_3]
+cluster3_accuracy = []  # Accuracy values for Cluster 3
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster3_accuracy.append(accuracy)
+
+accuracy_table.append(cluster3_accuracy)
+
+# SVM - Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+pca_data = [pca_clus4_1, pca_clus4_2, pca_clus4_3]
+cluster4_accuracy = []  # Accuracy values for Cluster 4
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster4_accuracy.append(accuracy)
+
+accuracy_table.append(cluster4_accuracy)
+
+# SVM - Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+pca_data = [pca_clus5_1, pca_clus5_2, pca_clus5_3]
+cluster5_accuracy = []  # Accuracy values for Cluster 5
+
+for i in range(len(pca_data)):
+    X_train, X_test, y_train, y_test = train_test_split(pca_data[i], encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster5_accuracy.append(accuracy)
+
+accuracy_table.append(cluster5_accuracy)
+
+# Print the accuracy table in tabular format
+print("SVM (PCA) \t1 Features\t2 Features\t3 Features")
+for i in range(len(accuracy_table)):
+    print(f"Cluster {i+1}\t{accuracy_table[i][0]:.2f}%\t\t{accuracy_table[i][1]:.2f}%\t\t{accuracy_table[i][2]:.2f}%")
+
+  from sklearn.svm import SVC
+
+# Initialize an empty nested list to store accuracy values
+accuracy_table = []
+
+# SVM - Cluster 1
+encoded_labels = labelEn.fit_transform(y1.values)
+features_list = ['1 Features', '2 Features', '3 Features']
+n_features = [1, 2, 3]
+cluster1_accuracy = []  # Accuracy values for Cluster 1
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_1, X1.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X1.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X1.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster1_accuracy.append(accuracy)
+
+accuracy_table.append(cluster1_accuracy)
+
+# SVM - Cluster 2
+encoded_labels = labelEn.fit_transform(y2.values)
+cluster2_accuracy = []  # Accuracy values for Cluster 2
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_2, X2.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X2.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X2.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster2_accuracy.append(accuracy)
+
+accuracy_table.append(cluster2_accuracy)
+
+# SVM - Cluster 3
+encoded_labels = labelEn.fit_transform(y3.values)
+cluster3_accuracy = []  # Accuracy values for Cluster 3
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_3, X3.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X3.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X3.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster3_accuracy.append(accuracy)
+
+accuracy_table.append(cluster3_accuracy)
+
+# SVM - Cluster 4
+encoded_labels = labelEn.fit_transform(y4.values)
+cluster4_accuracy = []  # Accuracy values for Cluster 4
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_4, X4.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X4.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X4.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster4_accuracy.append(accuracy)
+
+accuracy_table.append(cluster4_accuracy)
+
+# SVM - Cluster 5
+encoded_labels = labelEn.fit_transform(y5.values)
+cluster5_accuracy = []  # Accuracy values for Cluster 5
+
+for i in range(len(features_list)):
+    best_features = extract_best_features(f_score_5, X5.columns.values, n=n_features[i])
+    # the features are stored in the second column
+    drop_these = list(set(X5.columns.values) - set(best_features[:, 1]))
+    data_clus_mi = X5.drop(drop_these, axis=1, inplace=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_clus_mi, encoded_labels, test_size=0.3, shuffle=False)
+    clf = SVC(gamma='auto')
+    clf.fit(X_train, y_train)
+    # predict the result
+    y_pred = clf.predict(X_test)
+    accuracy = 100 * accuracy_score(y_pred, y_test)
+    cluster5_accuracy.append(accuracy)
+
+accuracy_table.append(cluster5_accuracy)
+
+# Print the accuracy table in tabular format
+print("SVM(F-Score) \t1 Features\t2 Features\t3 Features")
+for i in range(len(accuracy_table)):
+    print(f"Cluster {i+1}\t{accuracy_table[i][0]:.2f}%\t\t{accuracy_table[i][1]:.2f}%\t\t{accuracy_table[i][2]:.2f}%")
